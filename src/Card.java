@@ -8,6 +8,28 @@ public class Card {
 		this.num = num;
 		this.suit = suit;
 	}
+	
+	public char suitSym()
+	{
+		char result = 0;
+		if (this.suit =='H')
+		{
+			result = '\u2665';
+		}
+		else if (this.suit == 'D')
+		{
+			result = '\u2666';
+		}
+		else if (this.suit == 'S')
+		{
+			result = '\u2660';
+		}
+		else if (this.suit == 'C')
+		{
+			result = '\u2663';
+		}
+		return result;
+	}
 
 	public String getNum() {
 		return num;
@@ -27,7 +49,7 @@ public class Card {
 
 	@Override
 	public String toString() {
-		return "[" + num + suit + "]";
+		return "[" + num + suitSym() + "]";
 	}
 	
 	
