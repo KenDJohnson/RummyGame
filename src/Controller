@@ -1,0 +1,97 @@
+import java.awt.BorderLayout;
+import java.awt.Canvas; //importing the canvas for the game
+import java.awt.Dimension; //importing the scale factor
+
+import javax.swing.JFrame; //importing the JFrame aka writable area.
+
+public class Controller extends Canvas implements Runnable {
+	
+	private static final int WIDTH = 160; //width of the game
+	private static final int HEIGHT = WIDTH/12*9; //Game will be square
+	private static final int SCALE = 3; //Allows for user to make the game larger without distorting graphics
+	private static final String NAME = "Rummy"; //Our game name
+	
+	private JFrame frame;
+	
+	public boolean running = false; //This is for the start and stop methods.
+	
+	public Controller(){
+		setMinimumSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE)); //smallest size allowed
+		setMaximumSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE)); //largest size allowed
+		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE)); 
+		
+		frame = new JFrame(NAME); //JFrame with our game name
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //This allows for the program to close when the user closes it.
+		frame.setLayout(new BorderLayout()); //makes sure that everything is aligned when opened
+		
+		/*frame.add(this.BorderLayout.CENTER);*/ // I am still working on getting the game to stay centered
+		frame.pack(); //centers game and allows for the sizes to be correct
+		
+		frame.setResizable(false); //can't resize it later
+		frame.setLocationRelativeTo(null); //can't change location later
+		frame.setVisible(true); //you can now see it with this.
+		
+	}
+	
+	public synchronized void Start(){
+		
+		running = true; //needs to be true to start.
+		new Thread(this).start();
+		
+	}
+	
+	public synchronized void Stop(){
+		running = false; //needs to be false to stop.
+	}
+	
+	public void run() {
+		
+		long lastTime = System.nanoTime(); //gets the current time of the game
+		double nsPerTick = 1000000000D/60D; //this is the updates per 60 D represents a double.
+		int frames = 0;
+		int ticks = 0; //number for updates, will allow for FPS
+		
+		long LastTimer = System.currentTimeMillis();
+		double unprocessedNS = 0; //Unprocessed nano seconds.
+		
+		while(running){ //currently working on allowing for updates
+			
+			long now = System.nanoTime(); //time to check against lastTime
+			unprocessedNS += (now - lastTime)/nsPerTick;
+			lastTime = now;
+			
+			while(unprocessedNS >= 1){ 
+				ticks++;
+				tick();
+				unprocessedNS -= 1;
+				System.out.println(frames + "," + ticks);
+			}
+			frames++;
+			render();
+			
+			if(System.currentTimeMillis() - lastTime >= 1000){ //still working on FPS
+				
+				lastTime += 1000;
+				frames = 0;
+				ticks = 0;
+				
+			}
+	
+		}
+		
+	}
+	
+	public void tick(){
+		//this will update the logic of the game as it goes
+		
+	}
+	public void render(){
+		//this will also update the logic of the game as it goes.
+	}
+	
+	
+	public static void main(String[] args){
+		new Controller().Start();
+	}
+
+}
