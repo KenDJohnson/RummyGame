@@ -1,0 +1,25 @@
+Player
+#hand: bag
+#score: int
+#cantDiscard: Card
++play():boolean	if not legal, false, then go again. If legal remove cards chosen and add points to 				score
++draw(): void 		tells controller's _giveCard what it wants
++discardFromHand():Card	Checks legality, if legal, remove card, returns the card removed
+
+
+
+Pool
+#playBag: bag		Holds the lists that hold the cards in play
++score: int		returns score if legal, return score; if illegal return negative;
+
+
+
+
+Controller
+#players: player[]
+#pool: Pool
+#deck: Stack		Stack of cards
+#discardPile: Stack	Stack of cards
+_playCards(Card[] cards[]): int	passes to Pool's score, returns score's return value
+_discard(Card card): void		pushes the card on to discardPile
+_giveCard(Stack source, int numberOfCards): Card[]	gives the cards to player's draw
