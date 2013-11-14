@@ -1,80 +1,28 @@
 import java.util.*;
-public class Player {
-	private ArrayList<Card> hand;
-	private int score;
-	private Card cantDiscard;
-	public static Pool pool;
-	Scanner scan = new Scanner(System.in); //scanner to get input from the player
+public interface Player {
 	
-	public void draw()
-	{
-		int cards;
-		Stack source;
-		Controller.giveCard(source);
-		
-	}
+	public void draw();
 	
-	public void play()
-	{
-		ArrayList<Card> cards = new ArrayList<Card>();
-		boolean worked = false;
-		int value =0;
-		while(!worked)
-		{
-			value = Controller.playCards(cards);
-			if(value>0)
-			{
-				worked = true;
-			}
-		}
-		score = score+value;
-	}
+	public void play();
 	
-	public void discardFromHand()
-	{
-		Card discard;
-		Controller.discard(card);
-	}
+	public void discardFromHand();
 
-	public ArrayList<Card> getHand() {
-		return hand;
-	}
+	public ArrayList<Card> getHand();
 
-	public void setHand(ArrayList<Card> hand) {
-		this.hand = hand;
-	}
+	public void setHand(ArrayList<Card> hand);
 
-	public int getScore() {
-		return score;
-	}
+	public int getScore();
 
-	public void setScore(int score) {
-		this.score = score;
-	}
+	public void setScore(int score);
 
-	public Card getCantDiscard() {
-		return cantDiscard;
-	}
+	public Card getCantDiscard();
 
-	public void setCantDiscard(Card cantDiscard) {
-		this.cantDiscard = cantDiscard;
-	}
+	public void setCantDiscard(Card cantDiscard);
 
-	public static Pool getPool() {
-		return pool;
-	}
 
-	public static void setPool(Pool pool) {
-		Player.pool = pool;
-	}
+	public Scanner getScan();
 
-	public Scanner getScan() {
-		return scan;
-	}
-
-	public void setScan(Scanner scan) {
-		this.scan = scan;
-	}
+	public void setScan(Scanner scan);
 	
 	
 }
