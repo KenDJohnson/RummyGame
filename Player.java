@@ -19,7 +19,6 @@ public interface Player {
 
 	public void setCantDiscard(Card cantDiscard);
 
-
 	public Scanner getScan();
 
 	public void setScan(Scanner scan);

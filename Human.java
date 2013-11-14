@@ -1,5 +1,5 @@
 import java.util.*;
-public class Human extends Player{
+public class Human implements Player{
 	private Collection<Card> hand;
 	private int score;
 	private Card cantDiscard;
@@ -21,18 +21,19 @@ public class Human extends Player{
 		{
 			cards = 1;
 		}
-		giveCard(source, cards);
+		Controller.giveCard(source, cards);
 		
 	}
 	
 	public void play()
 	{
-		ArrayList<Card> cards = new ArrayList<Card>();
+		
+		Card[] cards = new Card[12];
 		boolean worked = false;
-		int value;
+		int value = 0;
 		while(!worked)
 		{
-			value = playCards(cards);
+			value = Controller.playCards(cards);
 			if(value>0)
 			{
 				worked = true;
@@ -44,6 +45,54 @@ public class Human extends Player{
 	public void discardFromHand()
 	{
 		Card discard;
-		discard(card);
+	//	discard(card);
+	}
+
+	@Override
+	public ArrayList<Card> getHand() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setHand(ArrayList<Card> hand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setScore(int score) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Card getCantDiscard() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCantDiscard(Card cantDiscard) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Scanner getScan() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setScan(Scanner scan) {
+		// TODO Auto-generated method stub
+		
 	}
 }
