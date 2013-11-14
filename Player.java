@@ -1,6 +1,6 @@
 import java.util.*;
 public class Player {
-	private Collection<Card> hand;
+	private ArrayList<Card> hand;
 	private int score;
 	private Card cantDiscard;
 	public static Pool pool;
@@ -10,7 +10,7 @@ public class Player {
 	{
 		int cards;
 		Stack source;
-		giveCard(source, cards);
+		Controller.giveCard(source);
 		
 	}
 	
@@ -18,10 +18,10 @@ public class Player {
 	{
 		ArrayList<Card> cards = new ArrayList<Card>();
 		boolean worked = false;
-		int value;
+		int value =0;
 		while(!worked)
 		{
-			value = playCards(cards);
+			value = Controller.playCards(cards);
 			if(value>0)
 			{
 				worked = true;
@@ -33,7 +33,48 @@ public class Player {
 	public void discardFromHand()
 	{
 		Card discard;
-		discard(card);
+		Controller.discard(card);
 	}
+
+	public ArrayList<Card> getHand() {
+		return hand;
+	}
+
+	public void setHand(ArrayList<Card> hand) {
+		this.hand = hand;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public Card getCantDiscard() {
+		return cantDiscard;
+	}
+
+	public void setCantDiscard(Card cantDiscard) {
+		this.cantDiscard = cantDiscard;
+	}
+
+	public static Pool getPool() {
+		return pool;
+	}
+
+	public static void setPool(Pool pool) {
+		Player.pool = pool;
+	}
+
+	public Scanner getScan() {
+		return scan;
+	}
+
+	public void setScan(Scanner scan) {
+		this.scan = scan;
+	}
+	
 	
 }
