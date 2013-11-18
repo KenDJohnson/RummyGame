@@ -1,0 +1,160 @@
+import java.util.*;
+
+//* 11/18/2013 4:27(PM): working on testing out starting situations. Might make new method for choices player makes. 
+// 						 feel free to test the game if you want. As you will notice after a deck or discard draw, 
+//						 the player's hand gets replaced with what they drew. Need to fix that. 
+
+public class Controller{
+	
+	protected static Player[] players; 
+	
+	protected static Pool pool; 
+	
+	protected static Deck deck;
+	
+	protected static LinkedList<Card> discardPile;
+	
+	public Controller(int numOfHumans, int numOfBots){
+		
+		players = new Player[1 + numOfBots];
+		
+		players[0] = new Human();
+		
+		for(int i = 1; i < players.length; i++){
+			//players[i] = new BotPlayer();
+		}
+
+		
+		deck = new Deck(false);
+		
+		discardPile = new LinkedList<Card>();
+		
+		pool = new Pool();
+		
+	}
+
+	public static int playCards(Card[] cards){
+		return pool.score(cards);
+	}
+	
+	public static void discard(Card card){
+		
+		discardPile.push(card); //adds discard to the top of the pile. 
+		
+	}
+	
+	public Card[] giveCard(String source, int numberOfCards){ 
+		
+		Card[] n = new Card[numberOfCards]; 
+	
+		if(source == "discard"){
+			
+			for(int i = 0; i < n.length; i++){
+				n[i] = discardPile.pop();
+			}
+			
+		}
+		else if(source == "deck start"){
+	
+			for(int i = 0; i < n.length; i++){
+				n[i] = deck.pop();
+				
+			}
+			
+		}
+		else if(source == "deck"){
+			
+			n[0] = deck.pop();
+			
+		}
+		return n;
+	}
+	
+	public void display(){
+		
+		//System.out.println("Player " + players);
+		
+		System.out.println("Discard Pile " + discardPile);
+		
+		//System.out.println("Player's hand " + HumanPlayer.getHand());
+		
+	}
+
+	@Override
+	public String toString() {
+		return Arrays.toString(players);
+	}
+
+	public static void main(String[] args){
+		
+		int NumberOfBots; //how many bots
+		String choice; //Player decision
+		
+		Scanner sc = new Scanner(System.in); //creating scanner for input from user
+		
+		System.out.println("How many Bots would you like to play against?"); 
+		
+		NumberOfBots = sc.nextInt(); //Number of bots gets set to the number player inputs.
+		
+		Controller play = new Controller(1, NumberOfBots); // Creating new Controller that takes in number of bots and one human
+		
+		Human human = new Human(); //human player here.
+		
+		players[0] = human; //human player will always be at position 0
+		
+		discardPile.add(deck.pop()); //starting discard pile
+	
+		human.setHand(play.giveCard("deck start", 7)); //deals out hand.
+		
+		System.out.println("\nHere is your starting Hand");
+		System.out.println(Arrays.toString(human.getHand()));
+		System.out.println("\nDiscard Pile: " + discardPile);		
+		//System.out.println("Would you like to play a hand?");
+		
+		//Unsure of what to do here, human.play() throws an error.
+		
+		System.out.println("\nDraw from the discard or the deck? ");
+		
+		choice = sc.next();
+		
+		
+		if(choice.equals("deck")){												/*----------------------------- FROM HERE ---------------------------------*/
+			human.setHand(play.giveCard("deck", 1));							
+		}																		
+		else if(choice.equals("discard")){										
+			int numberChoice;													
+			System.out.println("How many would you like to take?");				
+																					
+			numberChoice = sc.nextInt();										
+																				
+			human.setHand(play.giveCard("discard", numberChoice));				/****i am going to rework this section. Just made it like this for testing****/
+		}																	
+		else{
+			System.out.println("\nInvalid statment, please enter deck or discard");
+			
+			choice = sc.next();
+			
+			if(choice.equals("deck")){
+				human.setHand(play.giveCard("deck", 1));
+			}
+			else if(choice.equals("discard")){
+				int numberChoice;
+				System.out.println("How many would you like to take?");
+				
+				numberChoice = sc.nextInt();
+				
+				human.setHand(play.giveCard("discard", numberChoice));
+			}
+			else{
+				System.out.println("\nInvalid statment, please enter deck or discard");
+				choice = sc.next();
+			}
+		}																				/*--------------------------------TO HERE---------------------------*/
+		
+		System.out.println("\n\n\nCurrent Hand: " + Arrays.toString(human.getHand()));
+		
+		System.out.println("discard " + discardPile);
+
+		
+	}
+}
