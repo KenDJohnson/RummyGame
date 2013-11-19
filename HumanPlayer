@@ -1,0 +1,226 @@
+import java.util.*;
+
+public class HumanPlayer {
+	
+	private ArrayList<Card> hand;
+	private int score;
+	private Card cantDiscard;
+
+	public HumanPlayer()
+	{
+		hand = new ArrayList<Card>();
+		score=0;
+		cantDiscard = null;
+	}
+	
+	
+	
+	 public ArrayList<Card> getHand() {
+		return hand;
+	}
+
+
+
+	public void setHand(ArrayList<Card> hand) {
+		this.hand = hand;
+	}
+
+
+
+	public int getScore() {
+		return score;
+	}
+
+
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+
+
+	public Card getCantDiscard() {
+		return cantDiscard;
+	}
+
+
+
+	public void setCantDiscard(Card cantDiscard) {
+		this.cantDiscard = cantDiscard;
+	}
+
+
+
+	public void draw()
+     {
+		 Scanner scan = new Scanner(System.in); // create scanner to get info from player
+		 int numCards = 1; // this will be the number of cards drawn, defaults to 1 and only changes if drawing from discard
+		 String source = null; // this will be the source of the drawn card
+		 
+		 boolean validResponse = false;
+		 while(!validResponse) // loop keeps asking for input until it receives a valid response
+		 {
+			 System.out.println("Where would you like to draw from?(discard or deck)");
+			 source = scan.next();
+			 if(source.equals("discard")) // source is discard, how many cards to draw?
+			 {
+				 while(!validResponse) // another loop asking for input until it receives a valid response
+				 {
+	                 System.out.println("How many cards would you like to draw?");
+	                 try
+	                 {
+	                 numCards = scan.nextInt();
+	                 }
+	                 catch(InputMismatchException e) // this exception will be thrown if anything but an integer is input
+	                 {
+	                	 System.out.println("Please enter an integer number of cards.");
+	                	 scan.nextLine(); // clears scanner for new input (important)
+	                	 continue; // start next loop iteration
+	                 }
+	                 validResponse = true; // this is only reached when a valid response is entered
+				 }
+			 }
+			 else if(source.equals("deck")) // source is deck, draw 1 card
+			 {
+				 validResponse = true;
+			 }
+			 else // invalid source, try again
+			 {
+				 System.out.println("Invalid source. Please choose discard or deck.");
+			 }
+		 }
+         Controller.giveCard(source, numCards); // pass results on to Controller
+     }
+	 
+	 public void play()
+	 {
+		 Scanner scan = new Scanner(System.in); // create scanner to get info from player
+		 int numCards=0; // this will be the number of cards to be played
+		 Card[] cards; // this will be the array of cards being played
+		 int value;
+		 
+		 boolean keepPlaying = true;
+		 while(keepPlaying) // this loop runs as long as the player wants to keep playing cards
+		 {
+			 System.out.println("Would you like to play any cards?");
+			 String response = scan.next();
+			 if(response.equals("no")) // if don't want to play, then done
+			 {
+				 keepPlaying = false;
+				 continue;
+			 }
+			 else if(!response.equals("yes")) // if response is not yes or no, ask again
+			 {
+				 System.out.println("Invalid response. Please answer yes or no.");
+				 continue;
+			 }
+			 // only get here if response is yes
+			 
+			 // find out how many cards to play
+			 boolean validResponse = false;
+			 while(!validResponse) // loop asking for input until it receives a valid response
+			 {
+	             System.out.println("How many cards would you like to play?");
+	             try
+	             {
+	            	 numCards = scan.nextInt();
+	             }
+	             catch(InputMismatchException e) // this exception will be thrown if anything but an integer is input
+	             {
+	            	 System.out.println("Please enter an integer number of cards.");
+	            	 scan.nextLine(); // clears scanner for new input (important)
+	            	 continue; // start next loop iteration
+	             }
+	             if(numCards>0 && numCards<=hand.size())// can't play negative number of cards or more cards than you have
+	             {
+	            	 validResponse = true; 
+	             }
+	             else // invalid input, ask again
+	             {
+	            	 System.out.println("You can't play that many cards.");
+	             }
+			 }
+			 
+			 // get cards to be played
+			 cards = new Card[numCards];
+			 Card tempCard = null;
+			 
+			 for(int i=0;i<numCards;i++)
+			 {  
+				 validResponse = false;
+				 
+				 while(!validResponse)// loop asking for input until it receives a valid response
+				 {
+					 if(i==0) // first time asking
+					 {
+						 System.out.println("What is the first card? (Example: 6 H)");
+					 }
+					 else // asking otherwise
+					 {
+						 System.out.println("What is the next card?");
+					 }
+					 
+					 tempCard = new Card(scan.next(),scan.next().charAt(0)); // create temporary card based on input
+					 
+					 if(hand.contains(tempCard)) // valid input if this card is in your hand
+					 {
+						 cards[i] = tempCard; // add card to cards
+						 validResponse = true; // got a valid response
+						 scan.nextLine(); // clear scan for next input
+					 }
+					 else // invalid card
+					 {
+						 System.out.println("Invalid card. Please enter a card in the form [rank] [suit].");
+						 scan.nextLine(); // clear scan for next input
+					 }
+				 }
+			}
+			  // try to play your cards
+			 value = Controller.playCards(cards);
+			 if(value>0) // legal play
+			 {
+				 score += value; // add to score
+				 System.out.println("You scored " + value + " points."); // you got points
+				 for(int i=0; i<cards.length; i++) // remove played cards from hand
+					{
+						hand.remove(cards[i]);
+					}
+			 }
+			 else // illegal play
+			 {
+				 System.out.println("That is not a legal play."); // display this, then start over
+			 }
+				 
+		}
+	}
+	 
+	public void DiscardFromHand()
+	{
+		Scanner scan = new Scanner(System.in); // scanner to get input
+		Card tempCard; // temporary storage variable
+		
+		boolean validResponse = false;
+		while(!validResponse) // loop asking for input until it receives a valid response
+		{
+			System.out.println("Which card do you want to discard? (Example: 6 H)");
+			
+			tempCard = new Card(scan.next(),scan.next().charAt(0)); // create temporary card based on input
+			
+			if(hand.contains(tempCard) && !tempCard.equals(cantDiscard)) // discard is valid if it's in your hand and it's not cantDiscard
+			{
+				/* If controller needs to do something with the discarded card, the code should go here. */
+				
+				hand.remove(tempCard); // remove discarded card 
+				validResponse = true; // valid response
+			}
+			else // invalid response, try again
+			{
+				System.out.println("You can't discard that card.");
+				scan.nextLine();
+			}
+		}
+	}
+		 
+		 
+}
+	
