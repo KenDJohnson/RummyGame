@@ -1,5 +1,5 @@
 /* 11/14 update: changed to accommodate Card having String value and char suit
- * 11/25 update: fixed issue with previous update
+ * 11/25 update: fixed issue with printing
  */
 
 import java.util.*;
