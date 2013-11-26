@@ -1,7 +1,10 @@
+/* 11/14 update: changed to accommodate Card having String value and char suit
+ * 11/25 update: fixed issue with previous update
+ */
+
 import java.util.*;
 
-
-public class Pool { // 11/14 update: changed to accommodate Card having String value and char suit
+public class Pool { 
 	
 	private ArrayList<Meld> pool;
 	
@@ -21,7 +24,7 @@ public class Pool { // 11/14 update: changed to accommodate Card having String v
 		 * If can't add and not valid by itself, return -1.
 		 * 
 		 */
-		boolean isLegal = false;;
+		boolean isLegal = false;
 		
 		for(int i=0; i<pool.size() && !isLegal; i++)// loop through pool and try to append to existing melds, stop if successful append
 		{
@@ -143,7 +146,26 @@ public class Pool { // 11/14 update: changed to accommodate Card having String v
 			ArrayList<Card> cards = new ArrayList<Card>();
 			for(int i=0;i<values.size();i++)
 			{
-				cards.add(new Card(Integer.toString(values.get(i)),suit));
+				if(values.get(i) == 1)
+				{
+					cards.add(new Card("A",suit));
+				}
+				else if(values.get(i) == 11)
+				{
+					cards.add(new Card("J",suit));
+				}
+				else if(values.get(i) == 12)
+				{
+					cards.add(new Card("Q",suit));
+				}
+				else if(values.get(i) == 13)
+				{
+					cards.add(new Card("K",suit));
+				}
+				else
+				{
+					cards.add(new Card(Integer.toString(values.get(i)),suit));
+				}
 			}
 			return cards;
 		}
@@ -173,9 +195,32 @@ public class Pool { // 11/14 update: changed to accommodate Card having String v
 		public ArrayList<Card> getCards()
 		{
 			ArrayList<Card> cards = new ArrayList<Card>();
+			String tempValue;
+			if(value == 1)
+			{
+				tempValue = "A";
+			}
+			else if(value == 11)
+			{
+				tempValue = "J";
+			}
+			else if(value == 12)
+			{
+				tempValue = "Q";
+			}
+			else if(value == 13)
+			{
+				tempValue = "K";
+			}
+			else
+			{
+				tempValue = Integer.toString(value);
+			}
+			
 			for(int i=0;i<suits.size();i++)
 			{
-				cards.add(new Card(Integer.toString(value),suits.get(i)));
+				
+				cards.add(new Card(tempValue,suits.get(i)));
 			}
 			return cards;
 		}
