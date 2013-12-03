@@ -186,7 +186,7 @@ public class HumanPlayer implements Player{
 	            	 scan.nextLine(); // clears scanner for new input (important)
 	            	 continue; // start next loop iteration
 	             }
-	             if(numCards>0 && numCards<=hand.size())// can't play negative number of cards or more cards than you have
+	             if(numCards>0 && numCards<=hand.size()-1)// can't play negative number of cards and must leave at least 1 card in hand to discard
 	             {
 	            	 validResponse = true; 
 	             }
@@ -338,7 +338,7 @@ public class HumanPlayer implements Player{
 	            	 scan.nextLine(); // clears scanner for new input (important)
 	            	 continue; // start next loop iteration
 	             }
-	             if(numCards>=0 && numCards<=hand.size()-1)// can't play negative number of cards or more cards than you have (note: 1 card has already been chosen so use hand.size()-1)
+	             if(numCards>=0 && numCards<=hand.size()-2)// can't play negative number of cards and must leave at least 1 card in hand to discard (note: 1 card has already been chosen so use hand.size()-2)
 	             {
 	            	 validResponse = true; 
 	             }
