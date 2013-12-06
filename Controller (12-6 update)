@@ -1,0 +1,272 @@
+import java.util.*;
+
+public class Controller{
+        
+        /* This class allows for the players to interact with one another as well as with the pool*/
+        
+        protected static Player[] players; // Array of players to determine the players turn.
+        
+        protected static Pool pool; //Allows for controller to interact with the pool.
+        
+        protected static Deck deck; //Deck for the game.
+        
+        protected static LinkedList<Card> discardPile; //discard pile for the game.
+        
+        private static final int WINNING_SCORE = 500;
+        
+        /*number of humans should always be one, and the number of *
+         * bots is determined by the player when they start.*/
+        public Controller(int numOfHumans, int numOfBots){
+                
+                players = new Player[1 + numOfBots]; //array is set to the number of bots plus the human player
+                
+                deck = new Deck(false); //the deck is set to false because the deck is not empty.
+                
+                deck = deck.shuffle(); //The deck gets shuffled here.
+                
+                players[0] = new HumanPlayer(); //puts a human player in array at position 0, allowing for human to play first.
+                
+                /* for loop adding the number of bots to the remaining positions*/
+                for(int i = 1; i < players.length; i++){
+                        players[i] = new BotPlayer();
+                }
+                
+                discardPile = new LinkedList<Card>(); //creating a discard pile that is a linked list of cards.
+                discardPile.add(deck.pop()); //start discard pile
+
+                pool = new Pool(); //new pool is created here
+                
+        }
+
+        /* Method playCards allows for the player to try to play a hand.
+         * The array of cards is passed to pool to see if the move is valid or not.
+         * If it is valid the score is returned.*/
+        public static int playCards(Card[] cards){
+                int score = pool.score(cards);
+                if(score > 0){
+                        System.out.println("\nPool\n---------------------\n" + pool + "---------------------\n");
+                }
+                return score;
+        }
+        
+        /* Method discard is called at the end of every players turn.
+         * Adds the card that the player chooses to the top of the discard pile*/
+        public static void discard(Card card){
+                
+                discardPile.push(card); //adds discard to the top of the pile.
+                
+        }
+        
+        /* This method allows for the controller to give a card to the player.
+         * This method checks to see if the player wants to draw from deck or discard*/
+        public static ArrayList<Card> giveCard(String source, int numberOfCards){
+                
+                ArrayList<Card> n = new ArrayList<Card>();
+        
+                /*if the player states that they want to draw from the discard*/
+                if(source.equals("discard"))
+                {
+                    /*check to see if the number the player wants to draw is valid.*/
+                    if(numberOfCards > discardPile.size())
+                    {
+                    	/*loop to remove cards chosen from discard to array and passes to player hand.*/
+                    	for(int i = 0; i < numberOfCards; i++)
+                                n.add(discardPile.pop());
+                    }
+                }
+                
+                /*this loop is only for the start of the game. Deals starting hand to players.*/
+                else if(source.equals("deck start")){
+                        int i = 0;
+                        while(i < 7){
+                                n.add(deck.pop());
+                                i++;
+                        }
+                }
+                
+                /*removes one card from deck and adds to players hand.*/
+                else if(source.equals("deck")){
+                        n.add(0,deck.pop());
+                }
+                return n;
+        }
+
+        @Override
+        public String toString() {
+                return Arrays.toString(players);
+        }
+        
+
+        public static void main(String[] args){
+                
+                int NumberOfBots = 0; //how many bots
+        
+                System.out.println("---------------- Welcome To Rummy! -----------------");
+                System.out.println("The objective of this game is to reach "+WINNING_SCORE+" points.\nThe first player to reach this objective wins.\n----------------------------------------------------\n");
+                
+                Scanner sc = new Scanner(System.in); //creating scanner for input from user
+                
+                boolean validResponse = false;
+                
+                 while(!validResponse) // another loop asking for input until it receives a valid response
+                 {
+		             System.out.println("How many Bots would you like to play against? (1 - 3)");
+		            
+		         try
+		         {
+		         NumberOfBots = sc.nextInt();
+		         }
+		         catch(InputMismatchException e) // this exception will be thrown if anything but an integer is input
+		         {        
+		                          System.out.println("Invalid statement, please re-enter a number.");
+		                          sc.nextLine(); // clears scanner for new input (important)
+		                          continue; // start next loop iteration
+		         }
+		         if(NumberOfBots <= 3 && NumberOfBots > 0){
+		                  validResponse = true;
+		         }
+		         else{
+		                  System.out.println("Invalid number, please re-enter a number.");
+		         }
+		             }
+                
+                Controller play = new Controller(1, NumberOfBots); // Creating new Controller that takes in number of bots and one human
+                
+                Player human = new HumanPlayer(); //human player here.
+        
+                players[0] = human; //human player will always be at position 0
+        
+                
+                boolean KeepPlayingGame = true;
+                boolean KeepPlayingRound = true;
+                boolean FirstRound = true; // the game starts at the first round
+                
+                while(KeepPlayingGame)
+                {
+                	
+                	 int turn = 0;
+                     Player PlayerTurn = players[turn];
+                     System.out.println("A new round is starting.");
+                     
+                     /* For the first round, all the setup is taken care of in the constructor.
+                      * For the remaining rounds, need to reset deck and discard, and re-deal hands to players.
+                      */
+                     if(!FirstRound) 
+                     {
+	                     deck = new Deck(false); //create full deck
+	                     deck = deck.shuffle(); //shuffle deck
+	                     
+	                     players[0].getHand().clear(); // empty human player's hand
+	                     players[0].setHand(Controller.giveCard("deck start", 7)); // deal human player new hand
+	                     
+	                     for(int i = 1; i < players.length; i++) // create new bots for next round
+	                     {
+	                    	 int temp = players[i].getScore(); // need to keep came score from last round 
+	                         players[i] = new BotPlayer(); // create and give cards to new bot
+	                         players[i].setScore(temp); // give bot right score
+	                     }
+	                     
+	                     discardPile.clear(); //clear discard pile
+	                     discardPile.add(deck.pop()); //start discard pile
+	                     
+	                     pool = new Pool(); // create new, empty pool 
+                     }
+                     
+                     
+	                //so long as this is true, the round will continue.
+	                while(KeepPlayingRound){
+	                        
+	                        /* This if statement checks to see if the deck is now empty.
+	                         * if it is empty, then the deck obtains cards from the discard pile.
+	                         * The deck is then shuffled again, and discard obtains a card from deck.*/
+	                        if(deck.isEmpty()){
+	                                for(int i = 0; i < discardPile.size(); i++){
+	                                        deck.push(discardPile.pop());
+	                                }
+	                                deck = deck.shuffle();
+	                                discardPile.add(deck.pop());
+	                        }
+	                        
+	                        /* This is if the player is not a human player.*/
+	                        if(turn != 0){
+	                                
+	                                PlayerTurn.draw(); //bot draws.
+	                                PlayerTurn.play(); //bot can play
+	                                PlayerTurn.DiscardFromHand(); //bot discards from hand.
+	                                
+	                                System.out.println("\n");
+	                                for(int i = 0; i < PlayerTurn.getHand().size(); i++){
+	                                        System.out.print("[\u25AE] "); //hides bot hand from human player
+	                                }
+	                                System.out.println("Bot " + turn +" Score: " + players[turn].getScore());
+	                        
+	                        }
+	                        
+	                        /* This is if the player is a human player.*/
+	                        else{
+	                        System.out.println("\nScore: " + PlayerTurn.getScore() + "\nHand: " + PlayerTurn.getHand() + "\nDiscard Pile: " + discardPile + "\nPool\n---------------------\n" + pool + "---------------------\n");                        
+	                        
+	                        PlayerTurn.draw(); //human draws.
+	                        System.out.println(PlayerTurn.getHand() + "\tDiscard: " + discardPile + "\nPool: " + pool + "\n");
+	                
+	                        PlayerTurn.play(); //human can play.
+	                
+	                        PlayerTurn.DiscardFromHand(); //human discards.
+	                        
+	                        }
+	                        
+	                        //if player has no more cards, then round is over
+	                        KeepPlayingRound = PlayerTurn.getHand().size() != 0;
+	                        
+	                        //keeps track of the turns.
+	                        turn = (turn + 1) % players.length;
+	                        
+	                        //keeps track of the turns.
+	                        PlayerTurn = players[turn];
+	
+	                }
+	                
+	                FirstRound = false; // if a round has ended, then it is not the first round
+	                
+	                if(turn == 1) // print "round is over"
+	                	System.out.println("You have played all the cards in your hand. This round is over."); // you played all your cards
+	                else
+	                	System.out.println("Player "+ (turn-1) % players.length +" all the cards in their hand. This round is over."); // last bot to play played all their cards
+
+	                
+	                /*loop to check for if a players score is >= WINNING_SCORE. if it is, then the game is over and that player wins.*/
+	                int highestScore = players[0].getScore(); // highest score of all players
+	                int index = 0; // index in players[] of player with highest score
+	                for(int i = 1; i < players.length; i++){ // this loop determines which player has the highest score
+	                        if(players[i].getScore() >highestScore)
+	                        {
+	                                highestScore = players[i].getScore();
+	                                index = i;
+	                        }
+	                }
+	                if(highestScore>=WINNING_SCORE) // the player with the highest score wins if they have at least WINNING_SCORE points
+	                {
+	                	KeepPlayingGame = false;
+	                	
+	                	if(index==0)
+	                		 System.out.println("You win!");
+	                	else
+	                		 System.out.println("Player " + index + " wins!");
+	                }
+	                
+                }
+        }
+}
+
+//* 11/18/2013 4:04(PM): working on testing out starting situations. Might make new method for choices player makes.
+//                                                  feel free to test the game if you want. As you will notice after a deck or discard draw,
+//                                                 the player's hand gets replaced with what they drew. Need to fix that.
+//
+//* 11/19/2013 6:03(PM): Completed prototype for Human player and controller interaction. Minor fixes need to be made
+//                                                 in human player. Currently allows the play of the same card multiple times. Found out that
+//                                                 if you really wanted to, you could play by yourself and it works just fine.
+//
+//
+//* 12/2/2013 1:51 (PM): Added complete set of comments for final submission. 
+//
+//* 12/6/2013 added multiple rounds if no player has 500+ points yet
