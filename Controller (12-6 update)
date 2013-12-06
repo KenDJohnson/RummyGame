@@ -66,13 +66,9 @@ public class Controller{
                 /*if the player states that they want to draw from the discard*/
                 if(source.equals("discard"))
                 {
-                    /*check to see if the number the player wants to draw is valid.*/
-                    if(numberOfCards > discardPile.size())
-                    {
                     	/*loop to remove cards chosen from discard to array and passes to player hand.*/
                     	for(int i = 0; i < numberOfCards; i++)
                                 n.add(discardPile.pop());
-                    }
                 }
                 
                 /*this loop is only for the start of the game. Deals starting hand to players.*/
