@@ -1,6 +1,6 @@
 /* 11/25 update: -now forced to play last card picked up from discard if more than 1 is drawn
- * 	         -hand and played cards are now shown as cards are being selected to play
- * 
+ * 				 -hand and played cards are now shown as cards are being selected to play
+ * 12/8 update: can now play 0 cards (so can't get stuck if you say you want to play cards but only have 1 card in your hand)
  */
 
 import java.util.*;
@@ -14,6 +14,7 @@ public class HumanPlayer implements Player{
 	public HumanPlayer()
 	{
 		hand = Controller.giveCard("deck start", 7);
+		
 		score=0;
 		cantDiscard = null;
 	}
@@ -23,8 +24,7 @@ public class HumanPlayer implements Player{
 	 public ArrayList<Card> getHand() {
 		return hand;
 	}
-
-
+	 
 
 	public void setHand(ArrayList<Card> hand) {
 		this.hand = hand;
@@ -107,7 +107,7 @@ public class HumanPlayer implements Player{
 			 }
 			 
 			 ArrayList<Card> temp = Controller.giveCard(source, numCards); // pass results on to Controller to get cards
-			 
+			
 			 hand.addAll(temp); // add new cards to hand
 			 
 			 if(source.equals("deck")) // if drew card from deck, can discard anything, legal draw
@@ -117,6 +117,7 @@ public class HumanPlayer implements Player{
 			 }
 			 else // else, drew from discard
 			 {
+				 
 				 cantDiscard = temp.get(temp.size()-1); // can't discard the last card you picked up from the discard pile
 				 
 				 if(temp.size()==1) // if drew 1 card, then done, legal draw
@@ -186,7 +187,7 @@ public class HumanPlayer implements Player{
 	            	 scan.nextLine(); // clears scanner for new input (important)
 	            	 continue; // start next loop iteration
 	             }
-	             if(numCards>0 && numCards<=hand.size()-1)// can't play negative number of cards and must leave at least 1 card in hand to discard
+	             if(numCards>=0 && numCards<=hand.size()-1)// can't play negative number of cards and must leave at least 1 card in hand to discard
 	             {
 	            	 validResponse = true; 
 	             }
@@ -194,6 +195,14 @@ public class HumanPlayer implements Player{
 	             {
 	            	 System.out.println("You can't play that many cards.");
 	             }
+			 }
+			 
+			 if(numCards == 0) // if you want to play 0 cards, then:
+			 {
+				 System.out.println("You successfully played no cards."); // print that you successfully played 0 cards
+				 // print 'new' states of hand, discard pile, and pool
+				 System.out.println("\nHand: " + hand + "\nDiscard Pile: " + Controller.discardPile + "\nPool\n---------------------\n" + Controller.pool + "---------------------\n");
+				 continue; // continue to next iteration of while(keepPlaying) loop
 			 }
 			 
 			 // get cards to be played
@@ -260,7 +269,6 @@ public class HumanPlayer implements Player{
 				 System.out.println("That is not a legal play."); // display this, then start over
 			 }
 			 System.out.println("\nHand: " + hand + "\nDiscard Pile: " + Controller.discardPile + "\nPool\n---------------------\n" + Controller.pool + "---------------------\n");
-//			 System.out.println(hand);
 		}
 	}
 	 
