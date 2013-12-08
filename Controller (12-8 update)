@@ -12,7 +12,7 @@ public class Controller{
         
         protected static LinkedList<Card> discardPile; //discard pile for the game.
         
-        private static final int WINNING_SCORE = 500;
+        private static final int WINNING_SCORE = 100; // Score needed to win the game
         
         /*number of humans should always be one, and the number of *
          * bots is determined by the player when they start.*/
@@ -140,8 +140,7 @@ public class Controller{
                 while(KeepPlayingGame)
                 {
                 	
-                	 int turn = 0;
-                     Player PlayerTurn = players[turn];
+                	 
                      System.out.println("A new round is starting.");
                      
                      /* For the first round, all the setup is taken care of in the constructor.
@@ -168,7 +167,11 @@ public class Controller{
 	                     pool = new Pool(); // create new, empty pool 
                      }
                      
+                     int turn = 0;
+                     Player PlayerTurn = players[turn];
                      
+                     KeepPlayingRound = true;
+
 	                //so long as this is true, the round will continue.
 	                while(KeepPlayingRound){
 	                        
@@ -194,7 +197,7 @@ public class Controller{
 	                                for(int i = 0; i < PlayerTurn.getHand().size(); i++){
 	                                        System.out.print("[\u25AE] "); //hides bot hand from human player
 	                                }
-	                                System.out.println("Bot " + turn +" Score: " + players[turn].getScore());
+	                                System.out.println("Player " + turn +" Score: " + players[turn].getScore());
 	                        
 	                        }
 	                        
@@ -203,7 +206,7 @@ public class Controller{
 	                        System.out.println("\nScore: " + PlayerTurn.getScore() + "\nHand: " + PlayerTurn.getHand() + "\nDiscard Pile: " + discardPile + "\nPool\n---------------------\n" + pool + "---------------------\n");                        
 	                        
 	                        PlayerTurn.draw(); //human draws.
-	                        System.out.println(PlayerTurn.getHand() + "\tDiscard: " + discardPile + "\nPool: " + pool + "\n");
+	                        System.out.println("\nHand: " + PlayerTurn.getHand() + "\nDiscard Pile: " + discardPile + "\nPool\n---------------------\n" + pool + "---------------------\n");
 	                
 	                        PlayerTurn.play(); //human can play.
 	                
@@ -227,8 +230,23 @@ public class Controller{
 	                if(turn == 1) // print "round is over"
 	                	System.out.println("You have played all the cards in your hand. This round is over."); // you played all your cards
 	                else
-	                	System.out.println("Player "+ (turn-1) % players.length +" all the cards in their hand. This round is over."); // last bot to play played all their cards
-
+	                	System.out.println("Player "+ ((turn+players.length-1) % players.length) +" has played all the cards in their hand. This round is over."); // last bot to play played all their cards
+	                
+	                for(int i=0;i<players.length;i++) // deduct values of remaining cards in players' hands from their scores 
+	                {
+	                	for(int j=0;j<players[i].getHand().size();j++) // loop through player i's hand
+	                	{
+	                		players[i].setScore(players[i].getScore()-players[i].getHand().get(j).getValue()); // deduct card value from score for each card in hand
+	                	}
+	                }
+	                
+	                System.out.println("After deducting points for the remaining cards in each player's hand: \nYou have " + players[0].getScore() + " points.");
+	                for(int i=1;i<players.length;i++)
+	                {
+	                	System.out.println("Player " + i + " has " + players[i].getScore() + " points.");
+	                }
+	                
+	                
 	                
 	                /*loop to check for if a players score is >= WINNING_SCORE. if it is, then the game is over and that player wins.*/
 	                int highestScore = players[0].getScore(); // highest score of all players
@@ -265,4 +283,6 @@ public class Controller{
 //
 //* 12/2/2013 1:51 (PM): Added complete set of comments for final submission. 
 //
-//* 12/6/2013 added multiple rounds if no player has 500+ points yet
+//* 12/8/2013: Game play is now in rounds. If the player with the most points has at least WINNING_SCORE points, they win, otherwise a new round
+//             starts. Rounds end when somebody plays all the cards in there hand. At the end of every round (before checking for a winner), any
+//             player with cards left in their hand has the value of those cards deducted from their score. 
