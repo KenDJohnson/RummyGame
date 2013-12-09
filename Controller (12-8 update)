@@ -7,22 +7,24 @@ public class Controller{
         protected static Player[] players; // Array of players to determine the players turn.
         
         protected static Pool pool; //Allows for controller to interact with the pool.
-        
-        protected static Deck deck; //Deck for the game.
-        
+                
+        protected static LinkedList<Card> deck; //Deck for the game.
+
         protected static LinkedList<Card> discardPile; //discard pile for the game.
         
-        private static final int WINNING_SCORE = 100; // Score needed to win the game
+        private static final int WINNING_SCORE = 1000; // Score needed to win the game
         
         /*number of humans should always be one, and the number of *
          * bots is determined by the player when they start.*/
         public Controller(int numOfHumans, int numOfBots){
                 
                 players = new Player[1 + numOfBots]; //array is set to the number of bots plus the human player
+                                
+                deck = new LinkedList<Card>();// initialize deck
                 
-                deck = new Deck(false); //the deck is set to false because the deck is not empty.
+                fillDeck(); // put all 52 cards in deck
                 
-                deck = deck.shuffle(); //The deck gets shuffled here.
+                Collections.shuffle(deck); //The deck gets shuffled here.
                 
                 players[0] = new HumanPlayer(); //puts a human player in array at position 0, allowing for human to play first.
                 
@@ -148,8 +150,11 @@ public class Controller{
                       */
                      if(!FirstRound) 
                      {
-	                     deck = new Deck(false); //create full deck
-	                     deck = deck.shuffle(); //shuffle deck
+	                     deck.clear(); //empty deck
+	                     
+	                     fillDeck(); // fill deck 
+	                     
+	                     Collections.shuffle(deck); //shuffle deck
 	                     
 	                     players[0].getHand().clear(); // empty human player's hand
 	                     players[0].setHand(Controller.giveCard("deck start", 7)); // deal human player new hand
@@ -179,10 +184,11 @@ public class Controller{
 	                         * if it is empty, then the deck obtains cards from the discard pile.
 	                         * The deck is then shuffled again, and discard obtains a card from deck.*/
 	                        if(deck.isEmpty()){
-	                                for(int i = 0; i < discardPile.size(); i++){
+	                                while(!discardPile.isEmpty()) {
 	                                        deck.push(discardPile.pop());
 	                                }
-	                                deck = deck.shuffle();
+	                                
+	                                Collections.shuffle(deck);
 	                                discardPile.add(deck.pop());
 	                        }
 	                        
@@ -222,7 +228,7 @@ public class Controller{
 	                        
 	                        //keeps track of the turns.
 	                        PlayerTurn = players[turn];
-	
+	                        System.out.println("turn = "+turn);
 	                }
 	                
 	                FirstRound = false; // if a round has ended, then it is not the first round
@@ -270,6 +276,117 @@ public class Controller{
 	                
                 }
         }
+        
+        
+        /*This method puts the usual 52 cards into teh deck.
+         */
+        private static void fillDeck()
+        {
+        	Card h2 = new Card("2",'H');
+			Card h3 = new Card("3",'H');
+			Card h4 = new Card("4",'H');
+			Card h5 = new Card("5",'H');
+			Card h6 = new Card("6",'H');
+			Card h7 = new Card("7",'H');
+			Card h8 = new Card("8",'H');
+			Card h9 = new Card("9",'H');
+			Card h10 = new Card("10",'H');
+			Card hJ = new Card("J",'H');
+			Card hQ = new Card("Q",'H');
+			Card hK = new Card("K",'H');
+			Card hA = new Card("A",'H');
+			Card c2 = new Card("2",'C');
+			Card c3 = new Card("3",'C');
+			Card c4 = new Card("4",'C');
+			Card c5 = new Card("5",'C');
+			Card c6 = new Card("6",'C');
+			Card c7 = new Card("7",'C');
+			Card c8 = new Card("8",'C');
+			Card c9 = new Card("9",'C');
+			Card c10 = new Card("10",'C');
+			Card cJ = new Card("J",'C');
+			Card cQ = new Card("Q",'C');
+			Card cK = new Card("K",'C');
+			Card cA = new Card("A",'C');
+			Card s2 = new Card("2",'S');
+			Card s3 = new Card("3",'S');
+			Card s4 = new Card("4",'S');
+			Card s5 = new Card("5",'S');
+			Card s6 = new Card("6",'S');
+			Card s7 = new Card("7",'S');
+			Card s8 = new Card("8",'S');
+			Card s9 = new Card("9",'S');
+			Card s10 = new Card("10",'S');
+			Card sJ = new Card("J",'S');
+			Card sQ = new Card("Q",'S');
+			Card sK = new Card("K",'S');
+			Card sA = new Card("A",'S');
+			Card d2 = new Card("2",'D');
+			Card d3 = new Card("3",'D');
+			Card d4 = new Card("4",'D');
+			Card d5 = new Card("5",'D');
+			Card d6 = new Card("6",'D');
+			Card d7 = new Card("7",'D');
+			Card d8 = new Card("8",'D');
+			Card d9 = new Card("9",'D');
+			Card d10 = new Card("10",'D');
+			Card dJ = new Card("J",'D');
+			Card dQ = new Card("Q",'D');
+			Card dK = new Card("K",'D');
+			Card dA = new Card("A",'D');
+			deck.push(h2);
+			deck.push(h3);
+			deck.push(h4);
+			deck.push(h5);
+			deck.push(h6);
+			deck.push(h7);
+			deck.push(h8);
+			deck.push(h9);
+			deck.push(h10);
+			deck.push(hJ);
+			deck.push(hQ);
+			deck.push(hK);
+			deck.push(hA);
+			deck.push(c2);
+			deck.push(c3);
+			deck.push(c4);
+			deck.push(c5);
+			deck.push(c6);
+			deck.push(c7);
+			deck.push(c8);
+			deck.push(c9);
+			deck.push(c10);
+			deck.push(cJ);
+			deck.push(cQ);
+			deck.push(cK);
+			deck.push(cA);
+			deck.push(s2);
+			deck.push(s3);
+			deck.push(s4);
+			deck.push(s5);
+			deck.push(s6);
+			deck.push(s7);
+			deck.push(s8);
+			deck.push(s9);
+			deck.push(s10);
+			deck.push(sJ);
+			deck.push(sQ);
+			deck.push(sK);
+			deck.push(sA);
+			deck.push(d2);
+			deck.push(d3);
+			deck.push(d4);
+			deck.push(d5);
+			deck.push(d6);
+			deck.push(d7);
+			deck.push(d8);
+			deck.push(d9);
+			deck.push(d10);
+			deck.push(dJ);
+			deck.push(dQ);
+			deck.push(dK);
+			deck.push(dA);
+        }
 }
 
 //* 11/18/2013 4:04(PM): working on testing out starting situations. Might make new method for choices player makes.
@@ -284,5 +401,8 @@ public class Controller{
 //* 12/2/2013 1:51 (PM): Added complete set of comments for final submission. 
 //
 //* 12/8/2013: Game play is now in rounds. If the player with the most points has at least WINNING_SCORE points, they win, otherwise a new round
-//             starts. Rounds end when somebody plays all the cards in there hand. At the end of every round (before checking for a winner), any
+//			   starts. Rounds end when somebody plays all the cards in there hand. At the end of every round (before checking for a winner), any
 //             player with cards left in their hand has the value of those cards deducted from their score. 
+//
+//             Fixed issue with refilling deck after all cards have been drawn by implementing the deck using library code instead of the previously
+//             written deck class. This update removes the need for the separate Deck class.
