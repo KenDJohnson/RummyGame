@@ -144,9 +144,9 @@ public class Pool {
 		public ArrayList<Card> getCards()
 		{
 			ArrayList<Card> cards = new ArrayList<Card>();
-			for(int i=0;i<values.size();i++)
+			for(int i=0;i<values.size();i++) // all cards have same suit, use loop to add all available values
 			{
-				if(values.get(i) == 1)
+				if(values.get(i) == 1) // special cases for Ace, Jack, Queen, King
 				{
 					cards.add(new Card("A",suit));
 				}
@@ -164,7 +164,7 @@ public class Pool {
 				}
 				else
 				{
-					cards.add(new Card(Integer.toString(values.get(i)),suit));
+					cards.add(new Card(Integer.toString(values.get(i)),suit)); // use Integer.toString for values 2-10
 				}
 			}
 			return cards;
@@ -195,8 +195,8 @@ public class Pool {
 		public ArrayList<Card> getCards()
 		{
 			ArrayList<Card> cards = new ArrayList<Card>();
-			String tempValue;
-			if(value == 1)
+			String tempValue; // convert value to string
+			if(value == 1) // special cases for Ace, Jack, Queen, King
 			{
 				tempValue = "A";
 			}
@@ -214,10 +214,10 @@ public class Pool {
 			}
 			else
 			{
-				tempValue = Integer.toString(value);
+				tempValue = Integer.toString(value); // use Integer.toString for values 2-10
 			}
 			
-			for(int i=0;i<suits.size();i++)
+			for(int i=0;i<suits.size();i++) // all cards have same value, use loop to add all available suits
 			{
 				
 				cards.add(new Card(tempValue,suits.get(i)));
